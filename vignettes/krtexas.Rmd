@@ -94,6 +94,13 @@ other features to 0. Because the sum of the first two features is represented
 by group 1 (row number 7), we would like the learned gamma vector to take the 
 form c(0,0,0,0,0,0,[nonzero],0,0).
 
+The tree in this example can be visualized as follows:
+
+```{r, echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("figures/tree_example.png")
+```
+
+
 ## Fit Model
 
 ```{r, results = 'hide', warning = FALSE}
