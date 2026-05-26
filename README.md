@@ -147,7 +147,7 @@ For both stages:
 
 ***
 
-### Output
+### 📤 Output
 
 A list containing:
 
