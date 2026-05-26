@@ -159,6 +159,14 @@ A list containing:
 
 ***
 
+### 📈 Predicting on New Data
+
+```r
+# Predictions
+pred <- krtexas_predict(saved_krtexas_model, newx = X_test)
+```
+
+
 ## 🔍 Method Summary
 
 KR-TEXAS solves:
