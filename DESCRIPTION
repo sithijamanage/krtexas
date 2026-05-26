@@ -22,3 +22,8 @@ LinkingTo:
     RcppArmadillo
 URL: https://github.com/sithijamanage/krtexas
 BugReports: https://github.com/sithijamanage/krtexas/issues
+Suggests: 
+    knitr,
+    rmarkdown,
+    plotly
+VignetteBuilder: knitr

@@ -1,0 +1,212 @@
+---
+title: "Getting Started with krtexas"
+author: "Sithija Manage"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with krtexas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+***
+
+# 📦 Introduction
+
+The **krtexas** package implements **Kernel Regression with Tree-EXploring AggregationS (KR-TEXAS)**, a method for **nonparametric regression with structured predictors**.
+
+Many datasets naturally exhibit **hierarchical structure**, such as:
+
+* Microbiome taxonomies (species → genus → family)
+* Brain regions (voxels → regions → systems)
+* Financial sectors and industries
+* Geographic hierarchies
+
+KR-TEXAS leverages this structure to **learn both**:
+
+* which features matter
+* at what level of aggregation they matter
+
+***
+
+# ⚙️ Model Overview
+
+KR-TEXAS solves the penalized optimization problem:
+
+$$
+\min_{\gamma} \; L_n(\gamma) + \lambda \sum_v w_v \gamma_v
+$$
+
+where:
+
+* $L\_n(\gamma)$ is a leave-one-out kernel regression loss
+* $\gamma\_v$ controls whether node $v$ is selected
+* $w\_v$ are adaptive weights constructed from data
+
+The method proceeds in three stages:
+
+1. **Stage 1**: Fit model with $\lambda = 0$
+2. **Stage 2**: Construct adaptive weights
+3. **Stage 3**: Fit penalized model with cross-validation
+
+***
+
+# 🚀 Basic Usage
+
+```{r}
+library(krtexas)
+```
+
+## Simulated Example
+
+We simulate a simple dataset with a tree structure.
+
+```{r}
+set.seed(1)
+
+n <- 200
+p <- 6
+
+# Features
+X <- matrix(rnorm(n * p), n, p)
+
+# True relationship (depends only on sum of first 2 features)
+Y <- 3*(X[,1] + X[,2])^2 + rnorm(n, sd = 0.01)
+
+# Example tree matrix A (T x p)
+A <- rbind(  
+  diag(p),          # leaves
+  c(1,1,0,0,0,0),  # group 1
+  c(0,0,1,1,0,0),  # group 2
+  c(1,1,1,1,0,0)  # group 3
+)
+```
+
+Because the true relationship only depends on the *sum* of the *first two* features,
+we would like our regression method to set the coefficients of all
+other features to 0. Because the sum of the first two features is represented
+by group 1 (row number 7), we would like the learned gamma vector to take the 
+form c(0,0,0,0,0,0,[nonzero],0,0).
+
+## Fit Model
+
+```{r, results = 'hide', warning = FALSE}
+fit <- krtexas_fit(
+  X = X,
+  Y = Y,
+  A = A
+)
+```
+
+## Inspect Output
+
+```{r}
+str(fit)
+```
+
+Key components:
+
+* `gammas_learned`: selected features / aggregations
+* `lambda.best`: optimal regularization parameter
+* `training_loss`: final objective value
+
+Note that as we hoped, all gamma values except for the one corresponding to 
+group 1 are set to 0! This means that our estimator properly identified that
+the sum of the first two variables are the only ones relevant for predicting
+the outcome variable, and the value itself, 43, reflects how predictive changes
+in this variable are. 
+
+***
+
+# 🔮 Prediction on New Data
+
+```{r}
+X_test <- matrix(rnorm(50 * p), 50, p)
+
+pred <- krtexas_predict(fit, newx = X_test)
+
+head(pred)
+```
+
+***
+
+# 📊 Interactive 3D visualization of the learned surface
+
+You can click and drag the plot to inspect it :)
+
+```{r, echo = FALSE, fig.width = 7, fig.height = 5}
+library(plotly)
+
+# Grid over X1 and X2
+grid_size <- 50
+
+x1_seq <- seq(min(X[,1]), max(X[,1]), length.out = grid_size)
+x2_seq <- seq(min(X[,2]), max(X[,2]), length.out = grid_size)
+
+grid_2d <- expand.grid(x1_seq, x2_seq)
+
+# Fix remaining variables at their mean
+X_fixed <- matrix(colMeans(X), nrow = nrow(grid_2d), ncol = ncol(X), byrow = TRUE)
+
+X_fixed[,1] <- grid_2d[,1]
+X_fixed[,2] <- grid_2d[,2]
+
+# Predictions using existing fit
+z_pred <- krtexas_predict(fit, newx = X_fixed)
+
+# Convert to matrix
+Z <- matrix(z_pred, nrow = grid_size, byrow = FALSE)
+
+# Plotly surface
+plot_ly() %>%
+  add_surface(
+    x = x1_seq,
+    y = x2_seq,
+    z = Z,
+    colorscale = "Viridis",
+    opacity = 0.8
+  ) %>%
+  add_markers(
+    x = X[,1],
+    y = X[,2],
+    z = Y,
+    marker = list(size = 2, color = "black")
+  ) %>%
+  layout(
+    title = "KR-TEXAS Surface with Training Data",
+    scene = list(
+      xaxis = list(title = "X1"),
+      yaxis = list(title = "X2"),
+      zaxis = list(title = "Response")
+    )
+  )
+```
+
+
+# 📖 References
+
+> Manage, S., Wang, Y. S., & Wells, M. T. (2026).  
+> *Nonparametric Regression via Tree-Guided Feature Aggregation*.  
+> arXiv preprint.
+
+***
+
+# ✅ Summary
+
+KR-TEXAS provides a flexible framework for:
+
+* nonlinear regression
+* structured feature selection
+* interpretable aggregation
+
+For a full list of parameters, please see the README (https://github.com/sithijamanage/krtexas). 
+Feel free to email me with any questions. I should be pretty quick to respond at
+ssm255@cornell.edu 🙂!
+
+***
