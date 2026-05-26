@@ -35,8 +35,15 @@ Install from GitHub:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("sithijamanage/krtexas")
+devtools::install_github(
+  "sithijamanage/krtexas",
+  build_vignettes = TRUE
+)
 ```
+
+***
+**Read the vignette for a full, illustrative example:**  
+`browseVignettes("krtexas")`
 
 ***
 
