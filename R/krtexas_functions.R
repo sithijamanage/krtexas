@@ -23,13 +23,13 @@ NULL
 #' @param X Numeric matrix of predictors (n x p).
 #' @param Y Numeric response vector of length n.
 #' @param A Numeric matrix defining the tree / aggregation structure (M x p).
-#' @param kernel Kernel type, "gaussian" or "epanechnikov".
+#' @param kernel Kernel type, "gaussian".
 #' @param nfolds Number of CV folds.
 #' @param lambda Optional fixed lambda. If NULL, a lambda path is considered.
 #' @param min_lambda Minimum lambda for path (if lambda NULL).
 #' @param max_lambda Maximum lambda for path (if lambda NULL).
 #' @param nlambda Number of lambdas in path.
-#' @param alpha Sigma penalty parameter.
+#' @param alpha Sigma penalty parameter (keep fixed at 0).
 #' @param eps Optimizer tolerance (factr for L-BFGS-B).
 #' @param gamma_threshold Threshold for zeroing gammas.
 #' @param use_num_grad Whether to force numerical gradient (unused in current code).
