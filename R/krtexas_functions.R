@@ -388,7 +388,7 @@ krtexas_fit <- function(X,
       best_gamma_init <- init_u * init_w
       print("Attempt is not 1 so setting best_gamma_init was set now. ")
     }else{
-      print("Attempt is 1 so using best_gamma_init. ")
+      print("")
     }
     # * * *
     # Construct gamma_init_try for this attempt
