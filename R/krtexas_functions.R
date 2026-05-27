@@ -79,8 +79,6 @@ krtexas_fit <- function(X,
   cat(" +--------------+ ●.  ●\n")
   cat("                     / \\ \n")
   cat("                    ●.  ●\n")
-  cat("Packaged Version 04/22/2026\n")
-  cat("With Updated Algorithm 1. \n")
 
   cat("Running KR TEXAS with lambda = 0 to calculate weights (Stage 1/2)...\n")
   ###
@@ -91,7 +89,7 @@ krtexas_fit <- function(X,
   best_init_strat_1  <- NA_character_
 
   for (m in seq_len(num_restarts_stage_1)) {
-    cat("  Stage 1 restart", m, "of", num_restarts_stage_1, "...\n")
+    #cat("  Stage 1 restart", m, "of", num_restarts_stage_1, "...\n")
 
     # Decide gamma_init_strat for this restart
     gamma_init_strat_m <- if (m == 1) {
@@ -145,13 +143,13 @@ krtexas_fit <- function(X,
       best_loss0        <- krfit$training_loss
       best_init_strat_1 <- gamma_init_strat_m
 
-      cat("New Stage 1 best found (init =",
-          gamma_init_strat_m, "\n")
+      #cat("New Stage 1 best found (init =",
+      #    gamma_init_strat_m, "\n")
     }
   }# for stage 1
 
-  cat("Stage 1 winner initialization:",
-      best_init_strat_1, "\n")
+  #cat("Stage 1 winner initialization:",
+  #    best_init_strat_1, "\n")
 
 
   if (is.null(best_model0)) {
@@ -202,9 +200,9 @@ krtexas_fit <- function(X,
   C1 <- C_list$C1
   C2 <- C_list$C2
   C3 <- C_list$C3
-  cat("C1: ", C1, "\n")
-  cat("C2: ", C2, "\n")
-  cat("C3: ", C3, "\n")
+  #cat("C1: ", C1, "\n")
+  #cat("C2: ", C2, "\n")
+  #cat("C3: ", C3, "\n")
   #utils::View(data.frame(cbind(C1, C2, C3)))
 
   n <- nrow(X)
@@ -222,7 +220,7 @@ krtexas_fit <- function(X,
     w[is.infinite(w)] <- cap_w
   }
 
-  cat("Weights Calculated.\n")
+  #cat("Weights Calculated.\n")
   if(!is.null(lambda)){ #if lambda specified
     best_lambda2 <- lambda
   }else{
@@ -242,7 +240,7 @@ krtexas_fit <- function(X,
     folds <- make_folds(nrow(X), nfolds)
 
     for (m in seq_len(num_restarts_stage_2)) {
-      cat("  Stage 2 restart", m, "of", num_restarts_stage_2, "...\n")
+      #cat("  Stage 2 restart", m, "of", num_restarts_stage_2, "...\n")
 
       # Decide gamma_init_strat for this restart
       gamma_init_strat_m <- if (m == 1) {
@@ -266,7 +264,7 @@ krtexas_fit <- function(X,
       } else if(gamma_init_strat_m == "smallest"){
         ### Updated ###
         starting_gamma <- abs( rnorm(n=tau, mean = 0.1, sd = 0.01) )
-        cat("Using smallest gamma initialization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
+        #cat("Using smallest gamma initialization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
         init_u <- sqrt(starting_gamma)
         init_w <- sqrt(starting_gamma)
       }
@@ -323,13 +321,13 @@ krtexas_fit <- function(X,
         best_w            <- krfit2$init_w.best
         best_init_strat_2 <- gamma_init_strat_m
 
-        cat("New Stage 2 best found (init =",
-            gamma_init_strat_m,")\n")
+        #cat("New Stage 2 best found (init =",
+        #    gamma_init_strat_m,")\n")
       }
     }# for m stage 2
 
-    cat("Stage 2 winner initialization:",
-        best_init_strat_2, "\n")
+    #cat("Stage 2 winner initialization:",
+    #    best_init_strat_2, "\n")
 
     if (is.null(best_lambda2)) {
       stop("Best lambda was not found. It is null. All KR TEXAS Stage 2 restarts failed; failed_restarts2 = ",
@@ -344,20 +342,20 @@ krtexas_fit <- function(X,
     best_gamma_init <- NULL
   }
 
-  cat("Final KR TEXAS fit initial best_gamma_init: ",
-      if (!is.null(best_gamma_init)) best_gamma_init else NA, "\n")
+  #cat("Final KR TEXAS fit initial best_gamma_init: ",
+  #    if (!is.null(best_gamma_init)) best_gamma_init else NA, "\n")
 
   ## Stage 3: robust final fit with retries + perturbations of best_gamma_init
   attempt <- 1L
   krfit3  <- NULL
   last_err <- NULL
 
-  cat("Health Diagnostics:\n")
-  cat("best_lambda2: ", best_lambda2, "\n")
-  cat("w: ", w, "\n")
+  #cat("Health Diagnostics:\n")
+  #cat("best_lambda2: ", best_lambda2, "\n")
+  #cat("w: ", w, "\n")
 
   while (attempt <= max_attempts_stage_3) {
-    cat("Stage 3 attempt", attempt, "of", max_attempts_stage_3, "...\n")
+    #cat("Stage 3 attempt", attempt, "of", max_attempts_stage_3, "...\n")
     print("<")
     print(attempt)
     print(">")
@@ -380,7 +378,7 @@ krtexas_fit <- function(X,
       init_w <- stats::rnorm(n = tau, mean = max(1, n^(2/(4+tau))), sd = 1)
     } else if(gamma_init_strat_3 == "smallest"){
       starting_gamma <- abs( rnorm(n=tau, mean = 0.1, sd = 0.01) )
-      cat("Using smallest gamma initialization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
+      #cat("Using smallest gamma initialization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
       init_u <- sqrt(starting_gamma)
       init_w <- sqrt(starting_gamma)
     }
@@ -420,7 +418,7 @@ krtexas_fit <- function(X,
       )
     }, error = function(e) {
       last_err <<- e
-      cat("  Stage 3 attempt", attempt, "failed: ", conditionMessage(e), "\n")
+      #cat("  Stage 3 attempt", attempt, "failed: ", conditionMessage(e), "\n")
       NULL
     })
 
@@ -617,8 +615,8 @@ krtexas_fit_internal2 <- function(X,
     }
 
     for (lambda in lambda_seq) {
-      cat("============================================\n")
-      cat("Processing lambda =", lambda, "...\n")
+      #cat("============================================\n")
+      #cat("Processing lambda =", lambda, "...\n")
 
       ### NEW: record the *current* gamma_init for this lambda index
       if (warm_start && !is.null(lambda_gamma_inits)) {
@@ -747,7 +745,7 @@ krtexas_fit_internal2 <- function(X,
         lambda_loss <- 0
         for (fold in 1:nfolds) {
           resultRow <- (lambda_index - 1L) * nfolds + fold
-          cat("Executing fold", fold, "/", nfolds, "for lambda =", lambda, "...\n")
+          #cat("Executing fold", fold, "/", nfolds, "for lambda =", lambda, "...\n")
 
           train_indices <- which(folds != fold)
           test_indices <- which(folds == fold)
@@ -976,7 +974,7 @@ krtexas_fit_internal <- function(X,
       all_gammas_zero <- FALSE
       lambda_try <- 1e-10 # start with a number, then exponentiate by 2 iteratively to get to max_lambda
       while (!all_gammas_zero & lambda_try < 1e30) {
-        cat("Trying lambda = ", lambda_try, ".\n")
+        #cat("Trying lambda = ", lambda_try, ".\n")
         model_try <- krtexas_fixed_lambda(
           X = X,
           Y = Y,
@@ -1018,8 +1016,8 @@ krtexas_fit_internal <- function(X,
     }
 
     for (lambda in lambda_seq) {
-      cat("============================================\n")
-      cat("Processing lambda =", lambda, "...\n")
+      #cat("============================================\n")
+      #cat("Processing lambda =", lambda, "...\n")
 
       # Export lambda to cluster for this iteration
       if (parallel) {
@@ -1139,7 +1137,7 @@ krtexas_fit_internal <- function(X,
         lambda_loss <- 0
         for (fold in 1:nfolds) {
           resultRow <- (lambda_index - 1L) * nfolds + fold
-          cat("Executing fold", fold, "/", nfolds, "for lambda =", lambda, "...\n")
+          #cat("Executing fold", fold, "/", nfolds, "for lambda =", lambda, "...\n")
 
           train_indices <- which(folds != fold)
           test_indices <- which(folds == fold)
@@ -1295,7 +1293,7 @@ krtexas_fixed_lambda <- function(X = NULL,
   sigma <- 1  # FIXED
   n = nrow(X)
 
-  cat("*")
+  #cat("*")
   if (is.null(gamma_init)) {
     if(gamma_init_strat == "small"){
       init_u <- stats::rnorm(n = tau, mean = 1, sd = 1/4)
@@ -1307,7 +1305,7 @@ krtexas_fixed_lambda <- function(X = NULL,
     } else if(gamma_init_strat == "smallest"){
       ### Updated ###
       starting_gamma <- abs( rnorm(n=tau, mean = 0.1, sd = 0.01) )
-      cat("In krtexas_fixed_lambda - Using smallest gamma initalization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
+      #cat("In krtexas_fixed_lambda - Using smallest gamma initalization of starting_gamma[1:20]: ", starting_gamma[1:20], "\n")
       init_u <- sqrt(starting_gamma)
       init_w <- sqrt(starting_gamma)
     }
@@ -1325,7 +1323,7 @@ krtexas_fixed_lambda <- function(X = NULL,
     A_sparse <- Matrix::Matrix(A, sparse = TRUE)
     Ax <- as.matrix(A_sparse %*% t(X))
   }
-  cat("**")
+  #cat("**")
 
   ## ---------------------------
   ## Knock out gamma indices with impossibly high lambda*w's
@@ -1583,14 +1581,14 @@ krtexas_predict <- function(krtexas_model, newx) {
 
       w_sum <- sum(weights)
       if (w_sum == 0 || is.nan(w_sum)) {
-        cat(sprintf("Test %d: sum(weights)=0! NaN will result.\n", i))
-        cat("sigma: ", sigma, "\n")
-        cat("d_min: ", d_min, "\n")
-        cat("head(weights):", head(weights), "\n")
-        cat("head(dists_sq):", head(dists_sq), "\n")
-        cat("Y_train[1:5]:", head(Y_train), "\n")
-        cat("gammas_test[1:5]:", head(gammas_test), "\n")
-        cat("RowSums of A (first 10):", head(rowSums(abs(A))), "\n")
+        #cat(sprintf("Test %d: sum(weights)=0! NaN will result.\n", i))
+        #cat("sigma: ", sigma, "\n")
+        #cat("d_min: ", d_min, "\n")
+        #cat("head(weights):", head(weights), "\n")
+        #cat("head(dists_sq):", head(dists_sq), "\n")
+        #cat("Y_train[1:5]:", head(Y_train), "\n")
+        #cat("gammas_test[1:5]:", head(gammas_test), "\n")
+        #cat("RowSums of A (first 10):", head(rowSums(abs(A))), "\n")
       }
 
       yhat_test[i] <- sum(weights * Y_train) / w_sum
@@ -1690,7 +1688,7 @@ loss_fun_ep <- function(u,
     epDi <- pmax(1 - (D[i, -i] / (sigma^2)), 0)
 
     if (length(epDi) - length(Y[-i]) != 0) {
-      cat("length(epDi) - length(Y[-i]): ", length(epDi) - length(Y[-i]), "\n")
+      #cat("length(epDi) - length(Y[-i]): ", length(epDi) - length(Y[-i]), "\n")
     }
 
     sumEp_d_Y <- sum(epDi * Y[-i])
@@ -1700,8 +1698,8 @@ loss_fun_ep <- function(u,
     d_epD_d_gamma_i[, which(epDi == 0)] <- 0
 
     if (sumEp_d == 0) {
-      cat("sumEp_d==0. Try increasing sigma.\n")
-      cat(summary(epDi))
+      #cat("sumEp_d==0. Try increasing sigma.\n")
+      #cat(summary(epDi))
       stop("Increase Sigma.")
     }
 
@@ -2022,7 +2020,7 @@ get_adaptive_penalties_internal_NWML_L2 <- function(krtexas_model, A, int_ind_ml
   C2 <- numeric(M)
   C3 <- numeric(M)
 
-  cat("Generating sibling matrix...")
+  #cat("Generating sibling matrix...")
   sibling_mat <- matrix(0, nrow = M, ncol = M)
 
   # Find parent for each node
@@ -2059,7 +2057,7 @@ get_adaptive_penalties_internal_NWML_L2 <- function(krtexas_model, A, int_ind_ml
     }
   }
 
-  cat(" Sibling matrix generated. \n")
+  #cat(" Sibling matrix generated. \n")
   for (i in seq_len(nrow(sibling_mat))) {
     siblings <- which(sibling_mat[i, ] == 1)
     #cat(sprintf("Node %3d has siblings: %s\n",
@@ -2151,7 +2149,7 @@ get_adaptive_penalties_internal_LLR_L2 <- function(grad_llr, A, X, int_ind_ml) {
   C2 <- numeric(M)
   C3 <- numeric(M)
 
-  cat("Generating sibling matrix...")
+  #cat("Generating sibling matrix...")
   sibling_mat <- matrix(0, nrow = M, ncol = M)
 
   # Find parent for each node
@@ -2188,7 +2186,7 @@ get_adaptive_penalties_internal_LLR_L2 <- function(grad_llr, A, X, int_ind_ml) {
     }
   }
 
-  cat(" Sibling matrix generated. \n")
+  #cat(" Sibling matrix generated. \n")
   for (i in seq_len(nrow(sibling_mat))) {
     siblings <- which(sibling_mat[i, ] == 1)
     #cat(sprintf("Node %3d has siblings: %s\n",
@@ -2287,7 +2285,7 @@ get_adaptive_penalties_internal_NWML_L1 <- function(krtexas_model, A, int_ind_ml
   C2 <- numeric(M)
   C3 <- numeric(M)
 
-  cat("Generating sibling matrix...")
+  #cat("Generating sibling matrix...")
   sibling_mat <- matrix(0, nrow = M, ncol = M)
 
   # Find parent for each node
@@ -2324,7 +2322,7 @@ get_adaptive_penalties_internal_NWML_L1 <- function(krtexas_model, A, int_ind_ml
     }
   }
 
-  cat(" Sibling matrix generated. \n")
+  #cat(" Sibling matrix generated. \n")
   for (i in seq_len(nrow(sibling_mat))) {
     siblings <- which(sibling_mat[i, ] == 1)
     #cat(sprintf("Node %3d has siblings: %s\n",
@@ -2416,7 +2414,7 @@ get_adaptive_penalties_internal_LLR_L1 <- function(grad_llr, A, X, int_ind_ml) {
   C2 <- numeric(M)
   C3 <- numeric(M)
 
-  cat("Generating sibling matrix...")
+  #cat("Generating sibling matrix...")
   sibling_mat <- matrix(0, nrow = M, ncol = M)
 
   # Find parent for each node
@@ -2453,7 +2451,7 @@ get_adaptive_penalties_internal_LLR_L1 <- function(grad_llr, A, X, int_ind_ml) {
     }
   }
 
-  cat(" Sibling matrix generated. \n")
+  #cat(" Sibling matrix generated. \n")
   for (i in seq_len(nrow(sibling_mat))) {
     siblings <- which(sibling_mat[i, ] == 1)
     #cat(sprintf("Node %3d has siblings: %s\n",
