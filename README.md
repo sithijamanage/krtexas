@@ -13,7 +13,7 @@ An R package for **nonparametric regression via tree-guided feature aggregation*
 
   </tr>
 </table>
-***
+
 
 ## ✨ Overview
 
