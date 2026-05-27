@@ -80,7 +80,7 @@ krtexas_fit <- function(X,
   cat("                     / \\ \n")
   cat("                    ●.  ●\n")
 
-  cat("Running KR TEXAS with lambda = 0 to calculate weights (Stage 1/2)...\n")
+  cat("Running KR TEXAS with lambda = 0 to calculate weights (Stage 1/3)...\n")
   ###
   ## Stage 1: lambda = 0 with random restarts (num_restarts_stage_1)
   best_model0     <- NULL
@@ -225,7 +225,7 @@ krtexas_fit <- function(X,
     best_lambda2 <- lambda
   }else{
 
-    cat("Running KR TEXAS with adaptive penalty (Stage 2/2)...\n")
+    cat("Running KR TEXAS with adaptive penalty (Stage 2/3)...\n")
 
     best_lambda2     <- NULL
     best_loss2      <- Inf
@@ -355,10 +355,10 @@ krtexas_fit <- function(X,
   #cat("w: ", w, "\n")
 
   while (attempt <= max_attempts_stage_3) {
-    #cat("Stage 3 attempt", attempt, "of", max_attempts_stage_3, "...\n")
-    print("<")
-    print(attempt)
-    print(">")
+    cat("Running stage 3 attempt", attempt, "of", max_attempts_stage_3, "...\n")
+    #print("<")
+    #print(attempt)
+    #print(">")
 
     # Decide gamma_init_strat for this restart
     gamma_init_strat_3 <- if (attempt %% 3 == 0) {
@@ -522,7 +522,7 @@ krtexas_fit_internal2 <- function(X,
     if (is.null(n_cores)) {
       n_cores <- min(parallel::detectCores() - 1L, nfolds)  # Leave one core free, max = nfolds
     }
-    cat("Setting up parallel processing with", n_cores, "cores\n")
+    #cat("Setting up parallel processing with", n_cores, "cores\n")
     cl <- parallel::makeCluster(n_cores)
     doParallel::registerDoParallel(cl)
 
@@ -573,7 +573,7 @@ krtexas_fit_internal2 <- function(X,
       all_gammas_zero <- FALSE
       lambda_try <- 1e-10 # start with a number, then exponentiate by 2 iteratively to get to max_lambda
       while (!all_gammas_zero & lambda_try < 1e30) {
-        cat("Trying lambda = ", lambda_try, ".\n")
+        #cat("Trying lambda = ", lambda_try, ".\n")
         model_try <- krtexas_fixed_lambda(
           X = X,
           Y = Y,
@@ -929,7 +929,7 @@ krtexas_fit_internal <- function(X,
     if (is.null(n_cores)) {
       n_cores <- min(parallel::detectCores() - 1L, nfolds)  # Leave one core free, max = nfolds
     }
-    cat("Setting up parallel processing with", n_cores, "cores\n")
+    #cat("Setting up parallel processing with", n_cores, "cores\n")
     cl <- parallel::makeCluster(n_cores)
     doParallel::registerDoParallel(cl)
 
@@ -1219,7 +1219,7 @@ krtexas_fit_internal <- function(X,
   }
 
   # Train final model with optimal lambda
-  cat("Training model with lambda =", lambda_opt, "...\n")
+  #cat("Training model with lambda =", lambda_opt, "...\n")
   #gamma_init <- rep(1e-3, nrow(A))
   gamma_init <- NULL
 
