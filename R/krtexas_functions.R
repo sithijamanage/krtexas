@@ -89,7 +89,7 @@ krtexas_fit <- function(X,
   best_init_strat_1  <- NA_character_
 
   for (m in seq_len(num_restarts_stage_1)) {
-    #cat("  Stage 1 restart", m, "of", num_restarts_stage_1, "...\n")
+    cat("  Restart", m, "of", num_restarts_stage_1, "...\n")
 
     # Decide gamma_init_strat for this restart
     gamma_init_strat_m <- if (m == 1) {
@@ -240,7 +240,7 @@ krtexas_fit <- function(X,
     folds <- make_folds(nrow(X), nfolds)
 
     for (m in seq_len(num_restarts_stage_2)) {
-      #cat("  Stage 2 restart", m, "of", num_restarts_stage_2, "...\n")
+      cat("  Restart", m, "of", num_restarts_stage_2, "...\n")
 
       # Decide gamma_init_strat for this restart
       gamma_init_strat_m <- if (m == 1) {
@@ -345,6 +345,7 @@ krtexas_fit <- function(X,
   #cat("Final KR TEXAS fit initial best_gamma_init: ",
   #    if (!is.null(best_gamma_init)) best_gamma_init else NA, "\n")
 
+  cat("Running KR-TEXAS final optimization (Stage 3/3)...\n")
   ## Stage 3: robust final fit with retries + perturbations of best_gamma_init
   attempt <- 1L
   krfit3  <- NULL
@@ -355,7 +356,7 @@ krtexas_fit <- function(X,
   #cat("w: ", w, "\n")
 
   while (attempt <= max_attempts_stage_3) {
-    cat("Running stage 3 attempt", attempt, "of", max_attempts_stage_3, "...\n")
+    cat("  Attempt ", attempt, " of ", max_attempts_stage_3, "...\n")
     #print("<")
     #print(attempt)
     #print(">")
