@@ -568,7 +568,7 @@ krtexas_fit_internal2 <- function(X,
 
     # If max_lambda unspecified, do while loop to get it
     if (is.null(max_lambda)) {
-      cat("Finding max_lambda for CV...\n")
+      #cat("Finding max_lambda for CV...\n")
       gamma_init_copy <- gamma_init
       all_gammas_zero <- FALSE
       lambda_try <- 1e-10 # start with a number, then exponentiate by 2 iteratively to get to max_lambda
@@ -602,7 +602,7 @@ krtexas_fit_internal2 <- function(X,
       } # while
 
       max_lambda <- lambda_try
-      cat("max_lambda found: ", max_lambda, "\n")
+      #cat("max_lambda found: ", max_lambda, "\n")
     } # if max_lambda null
 
     if (min_lambda == 0) {
@@ -969,7 +969,7 @@ krtexas_fit_internal <- function(X,
 
     # If max_lambda unspecified, do while loop to get it
     if (is.null(max_lambda)) {
-      cat("Finding max_lambda for CV...\n")
+      #cat("Finding max_lambda for CV...\n")
       gamma_init_copy <- gamma_init
       all_gammas_zero <- FALSE
       lambda_try <- 1e-10 # start with a number, then exponentiate by 2 iteratively to get to max_lambda
@@ -1003,7 +1003,7 @@ krtexas_fit_internal <- function(X,
       } # while
 
       max_lambda <- lambda_try
-      cat("max_lambda found: ", max_lambda, "\n")
+      #cat("max_lambda found: ", max_lambda, "\n")
     } # if max_lambda null
 
     if (min_lambda == 0) {
