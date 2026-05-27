@@ -1,8 +1,20 @@
 # 📦 krtexas
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+
+<!-- badges: start -->
+<!-- badges: end -->
 
 **Kernel Regression with Tree-EXploring AggregationS (KR-TEXAS)**  
 An R package for **nonparametric regression via tree-guided feature aggregation**.
 
+    </td>
+    <td style="vertical-align: top;">
+      <img src="man/krtexas_logo.png" alt="krtexas logo" width="700">
+    </td>
+  </tr>
+</table>
 ***
 
 ## ✨ Overview
